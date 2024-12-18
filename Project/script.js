@@ -41,8 +41,14 @@ let correctAnswers = 0;
 
 const titleP = document.getElementById("titleP");
 const questionP = document.getElementById("questionP");
-const buttonsBtns = document.querySelectorAll(".btn");
+const buttonsBtns = document.querySelectorAll(".answer");
 const correctAnswersP = document.getElementById("correctAnswersP");
+const NextQuestionBtn = document.getElementById("NextQuestionBtn");
+
+NextQuestionBtn.addEventListener("click", () => {
+    currentQuestion++;
+    displayQuestion(currentQuestion);
+});
 
 function displayQuestion(index) {
     if (index < questions.length) {
@@ -60,6 +66,7 @@ function displayQuestion(index) {
         buttonsBtns.forEach((btn) => {
             btn.style.display = "none";
         })
+        NextQuestionBtn.style.display = "none";
         correctAnswersP.style.display = "block";
         correctAnswersP.textContent = `You got ${correctAnswers} correct answers`;
     }
@@ -82,7 +89,10 @@ buttonsBtns.forEach((btn) => {
             correctAnswers++;
         }
 
+        NextQuestionBtn.style.visibility = "hidden";
+
         setTimeout(() => {
+            NextQuestionBtn.style.visibility = "visible";
             buttonsBtns.forEach((btn) => {
                 btn.style.backgroundColor = "";
             });
