@@ -37,39 +37,59 @@ const questions = [
 ];
 
 let currentQuestion = 0;
+let correctAnswers = 0;
 
-const title = document.getElementById("title");
-const question = document.getElementById("question");
-const buttons = document.querySelectorAll(".btn");
+const titleP = document.getElementById("titleP");
+const questionP = document.getElementById("questionP");
+const buttonsBtns = document.querySelectorAll(".btn");
+const correctAnswersP = document.getElementById("correctAnswersP");
 
 function displayQuestion(index) {
     if (index < questions.length) {
         const q = questions[index];
-        title.textContent = `Question ${index + 1}/${questions.length}`;
-        question.textContent = q.text;
-        buttons.forEach((btn, i) => {
+        titleP.textContent = `Question ${index + 1}/${questions.length}`;
+        questionP.textContent = q.text;
+        buttonsBtns.forEach((btn, i) => {
             btn.textContent = q.options[i];
             btn.dataset.index = i;
         });
     } else {
-        question.textContent = "Quiz finished! Thanks for playing.";
-        document.getElementById("buttons").style.display = "none";
+        questionP.textContent = "Quiz finished! Thanks for playing.";
+        titleP.style.display = "none";
+        questionP.style.display = "none";
+        buttonsBtns.forEach((btn) => {
+            btn.style.display = "none";
+        })
+        correctAnswersP.style.display = "block";
+        correctAnswersP.textContent = `You got ${correctAnswers} correct answers`;
     }
 }
 
-buttons.forEach((btn) => {
+buttonsBtns.forEach((btn) => {
     btn.addEventListener("click", (e) => {
         const selectedOption = parseInt(e.target.dataset.index);
         const correctAnswer = questions[currentQuestion].answer;
 
+        buttonsBtns.forEach((button, i) => {
+            if (i === correctAnswer) {
+                button.style.backgroundColor = "green";
+            } else {
+                button.style.backgroundColor = "red";
+            }
+        });
+
         if (selectedOption === correctAnswer) {
-            alert("Correct!");
-        } else {
-            alert("Wrong!");
+            correctAnswers++;
         }
 
-        currentQuestion++;
-        displayQuestion(currentQuestion);
+        setTimeout(() => {
+            buttonsBtns.forEach((btn) => {
+                btn.style.backgroundColor = "";
+            });
+
+            currentQuestion++;
+            displayQuestion(currentQuestion);
+        }, 2000);
     });
 });
 
