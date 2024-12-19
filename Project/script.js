@@ -36,16 +36,19 @@ const questions = [
     }
 ];
 
+const titleP = document.getElementById("titleP");
+const questionP = document.getElementById("questionP");
+const answerBtns = document.querySelectorAll(".answer");
+const correctAnswersP = document.getElementById("correctAnswersP");
+const buttonsDiv = document.getElementById("buttonsDiv");
+const nextQuestionDiv = document.getElementById("nextQuestionDiv");
+const nextQuestionBtn = document.getElementById("nextQuestionBtn");
+const restartQuizBtn = document.getElementById("restartQuizBtn");
+
 let currentQuestion = 0;
 let correctAnswers = 0;
 
-const titleP = document.getElementById("titleP");
-const questionP = document.getElementById("questionP");
-const buttonsBtns = document.querySelectorAll(".answer");
-const correctAnswersP = document.getElementById("correctAnswersP");
-const NextQuestionBtn = document.getElementById("NextQuestionBtn");
-
-NextQuestionBtn.addEventListener("click", () => {
+nextQuestionBtn.addEventListener("click", () => {
     currentQuestion++;
     displayQuestion(currentQuestion);
 });
@@ -53,31 +56,34 @@ NextQuestionBtn.addEventListener("click", () => {
 function displayQuestion(index) {
     if (index < questions.length) {
         const q = questions[index];
+
         titleP.textContent = `Question ${index + 1}/${questions.length}`;
+
         questionP.textContent = q.text;
-        buttonsBtns.forEach((btn, i) => {
+        answerBtns.forEach((btn, i) => {
             btn.textContent = q.options[i];
             btn.dataset.index = i;
         });
     } else {
-        questionP.textContent = "Quiz finished! Thanks for playing.";
-        titleP.style.display = "none";
-        questionP.style.display = "none";
-        buttonsBtns.forEach((btn) => {
-            btn.style.display = "none";
-        })
-        NextQuestionBtn.style.display = "none";
+        restartQuizBtn.style.display = "block";
         correctAnswersP.style.display = "block";
-        correctAnswersP.textContent = `You got ${correctAnswers} correct answers`;
+        correctAnswersP.textContent = `You got ${correctAnswers} correct answers.`;
+        questionP.textContent = "Quiz finished! Thanks for playing.";
+
+        titleP.style.display = "none";
+        buttonsDiv.style.display = "none";
+        nextQuestionDiv.style.display = "none";
     }
 }
 
-buttonsBtns.forEach((btn) => {
+answerBtns.forEach((btn) => {
     btn.addEventListener("click", (e) => {
         const selectedOption = parseInt(e.target.dataset.index);
         const correctAnswer = questions[currentQuestion].answer;
 
-        buttonsBtns.forEach((button, i) => {
+        answerBtns.forEach((button, i) => {
+            button.disabled = true;
+
             if (i === correctAnswer) {
                 button.style.backgroundColor = "green";
             } else {
@@ -89,18 +95,34 @@ buttonsBtns.forEach((btn) => {
             correctAnswers++;
         }
 
-        NextQuestionBtn.style.visibility = "hidden";
+        nextQuestionDiv.style.visibility = "hidden";
 
         setTimeout(() => {
-            NextQuestionBtn.style.visibility = "visible";
-            buttonsBtns.forEach((btn) => {
+            nextQuestionDiv.style.visibility = "visible";
+
+            answerBtns.forEach((btn) => {
                 btn.style.backgroundColor = "";
+                btn.disabled = false;
             });
 
             currentQuestion++;
             displayQuestion(currentQuestion);
         }, 2000);
     });
+});
+
+restartQuizBtn.addEventListener("click", () => {
+    currentQuestion = 0;
+    correctAnswers = 0;
+
+    displayQuestion(currentQuestion);
+
+    titleP.style.display = "block";
+    questionP.style.display = "block";
+    buttonsDiv.style.display = "flex";
+    nextQuestionDiv.style.display = "block";
+    correctAnswersP.style.display = "none";
+    restartQuizBtn.style.display = "none";
 });
 
 displayQuestion(currentQuestion);
