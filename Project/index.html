@@ -4,19 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    <title>Modsen Project</title>
+    <title>Quiz</title>
 </head>
 <body>
-    <div class="mainDiv">
-        <p class="title" id="title">Question 1/4</p>
-        <p class="question" id="question"></p>
-        <div id="buttons">
-            <button class="btn answer1"></button>
-            <button class="btn answer2"></button>
-            <button class="btn answer3"></button>
-        </div>
-    </div>
-
-    <script src="script.js"></script>
+    <header>
+        <button class="btn swap-theme-btn" id="swap-theme-btn">Swap theme</button>
+    </header>
+    <main>
+        <section class="quiz-container">
+            <h4 class="timer" id="timer">10</h3>
+            <h1 class="quiz-title" id="quiz-title"></h1>
+                <h3 class="quiz-question" id="quiz-question"></h3>
+                <div class="answers-wrapper" id="answers-wrapper"></div>
+            <div class="next-question-wrapper" id="next-question-wrapper">
+                <button class="btn submit-question-btn" id="submit-question-btn">Submit</button>
+                <button class="btn next-question-btn" id="next-question-btn">Skip question</button>
+            </div>
+            <h3 class="results-message" id="results-message"></h3>
+            <button class="btn restart-quiz-btn" id="restart-quiz-btn">Restart Quiz</button>
+        </section>
+    </main>
+    <script type="module" src="script.js"></script>
 </body>
 </html>

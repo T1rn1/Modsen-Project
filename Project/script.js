@@ -1,76 +1,219 @@
-const questions = [
-    { 
-        text: "How many planets are in the solar system?", 
-        options: ["8", "9", "10"], 
-        answer: 0 
-    },
-    { 
-        text: "What is the freezing point of water?", 
-        options: ["0", "-5", "-6"], 
-        answer: 0 
-    },
-    { 
-        text: "What is the longest river in the world?", 
-        options: ["Nile", "Amazon", "Yangtze"], 
-        answer: 1 
-    },
-    { 
-        text: "How many chromosomes are in the human genome?", 
-        options: ["42", "44", "46"], 
-        answer: 2 
-    },
-    { 
-        text: "Which of these characters are friends with Harry Potter?", 
-        options: ["Ron Weasley", "Draco Malfoy", "Hermione Granger"], 
-        answer: 0 
-    },
-    { 
-        text: "What is the capital of Canada?", 
-        options: ["Toronto", "Ottawa", "Vancouver"], 
-        answer: 1 
-    },
-    { 
-        text: "What is the Jewish New Year called?", 
-        options: ["Hanukkah", "Yom Kippur", "Kwanzaa"], 
-        answer: 1 
-    }
-];
+import { questions, quizSelectors } from './constants.js';
 
-let currentQuestion = 0;
+let currentQuestion = 4;
+let correctAnswers = 0;
+let timerTime = 10;
+let timerInterval;
+let answer_btns;
+let answers_arr;
 
-const title = document.getElementById("title");
-const question = document.getElementById("question");
-const buttons = document.querySelectorAll(".btn");
+const {
+    swap_theme_btn,
+    timer,
+    quiz_title,
+    quiz_question,
+    results_message,
+    answers_wrapper,
+    next_question_wrapper,
+    submit_btn,
+    next_question_btn,
+    restart_quiz_btn,
+} = quizSelectors;
 
-function displayQuestion(index) {
-    if (index < questions.length) {
-        const q = questions[index];
-        title.textContent = `Question ${index + 1}/${questions.length}`;
-        question.textContent = q.text;
-        buttons.forEach((btn, i) => {
-            btn.textContent = q.options[i];
-            btn.dataset.index = i;
-        });
+swap_theme_btn.addEventListener("click", toggleDarkTheme);
+
+function toggleDarkTheme() {
+    const root = document.documentElement;
+    root.classList.toggle('dark-theme');
+    answer_btns.forEach((btn) => {
+        if(!answers_arr.includes(btn.textContent)) setButtonBackgroundColor(btn)
+    })
+}
+
+function displayQuestion() {
+    clearAnswers();
+    if (currentQuestion < questions.length) {
+        restartTimer();
+        updateQuestion();
+        createAnswerButtons();
     } else {
-        question.textContent = "Quiz finished! Thanks for playing.";
-        document.getElementById("buttons").style.display = "none";
+        displayResults();
     }
 }
 
-buttons.forEach((btn) => {
-    btn.addEventListener("click", (e) => {
-        const selectedOption = parseInt(e.target.dataset.index);
-        const correctAnswer = questions[currentQuestion].answer;
-
-        if (selectedOption === correctAnswer) {
-            alert("Correct!");
+function startTimer() {
+    timerInterval = setInterval(() => {
+        if (timerTime >= 0) {
+            timer.textContent = timerTime;
+            timerTime--;
         } else {
-            alert("Wrong!");
+            clearInterval(timerInterval);
+            currentQuestion++;
+            displayQuestion();
         }
+    }, 1000);
+}
 
-        currentQuestion++;
-        displayQuestion(currentQuestion);
+function restartTimer() {
+    clearInterval(timerInterval);
+    timerTime = 10;
+    timer.textContent = timerTime;
+    startTimer();
+}
+
+function updateQuestion() {
+    quiz_title.textContent = `Question ${currentQuestion + 1} / ${questions.length}`;
+    quiz_question.textContent = questions[currentQuestion].text;
+    next_question_wrapper.style.visibility = 'visible';
+}
+
+function createAnswerButtons() {
+    const question = questions[currentQuestion];
+    question.options.forEach((option) => {
+        const newBtn = document.createElement('button');
+        newBtn.className = 'btn answer-btn';
+        newBtn.textContent = option;
+        setButtonBackgroundColor(newBtn);
+        answers_wrapper.appendChild(newBtn);
     });
+
+    answer_btns = document.querySelectorAll('.answer-btn');
+    addAnswerButtonListeners(question.answer);
+}
+
+function addAnswerButtonListeners(correctAnswer) {
+    if(Array.isArray(correctAnswer)){
+        alert("There may be several answers to this question.");
+        answers_arr = [];
+        answer_btns.forEach((btn) => {
+            btn.addEventListener('click', (e) => {
+                
+                const selected_btn = e.target;
+
+                if(answers_arr.includes(selected_btn.textContent)){
+                    answers_arr = answers_arr.filter(item => item !== selected_btn.textContent);
+                    setButtonBackgroundColor(selected_btn);
+                }else{
+                    answers_arr.push(selected_btn.textContent)
+                    selected_btn.style.background = 'gray';
+                }
+
+                if(answers_arr.length > 0){
+                    submit_btn.style.visibility = "visible";
+                }else{
+                    submit_btn.style.visibility = "hidden";
+                }
+
+                next_question_wrapper.style.visibility = 'hidden';
+            });
+        });
+    } else {
+        answer_btns.forEach((btn) => {
+            btn.addEventListener('click', (e) => {
+                const selectedOption = e.target.textContent;
+
+                answer_btns.forEach(button => button.disabled = true);
+
+                if (selectedOption === correctAnswer) {
+                    correctAnswers++;
+                    e.target.style.background = 'green';
+                } else {
+                    e.target.style.background = 'red';
+                    
+                    answer_btns.forEach(button => {
+                        if (button.textContent === correctAnswer) {
+                            button.style.background = 'green';
+                        }
+                    });
+                }
+
+                next_question_wrapper.style.visibility = 'hidden';
+
+                setTimeout(() => {
+                    currentQuestion++;
+                    displayQuestion();
+                }, 1000);
+            });
+        });
+    }
+}
+
+function setButtonBackgroundColor(button) {
+    let buttonBgColor = getComputedStyle(document.documentElement).getPropertyValue('--btn-bg-color');
+    button.style.backgroundColor = buttonBgColor;
+}
+
+function clearAnswers() {
+    if(submit_btn.style.visibility === 'visible') submit_btn.style.visibility = 'hidden';
+    answers_wrapper.innerHTML = '';
+}
+
+function checkArrays(arr1, arr2) {
+    if (arr1.length !== arr2.length) return false; 
+
+    const sortedArr1 = [...arr1].sort();
+    const sortedArr2 = [...arr2].sort();
+
+    for(let i = 0; i < sortedArr1.length; i++){
+        if (sortedArr1[i] !== sortedArr2[i]){
+            return false;
+        }
+    }
+
+  return true;
+}
+
+function submitBtnClick(){
+    const rigthAnswers = questions[currentQuestion].answer;
+    if (checkArrays(answers_arr, rigthAnswers)) correctAnswers++;
+    else {
+        answer_btns.forEach((btn) => {
+            if (rigthAnswers.includes(btn.textContent)) btn.style.background = 'green';
+            else if (answers_arr.includes(btn.textContent) && !rigthAnswers.includes(btn.textContent)) btn.style.background = 'red';
+        })
+    }
+
+    setTimeout(() => {
+        currentQuestion++;
+        displayQuestion();
+    }, 2000);
+}
+
+submit_btn.addEventListener("click", submitBtnClick);
+
+
+
+function displayResults() {
+    clearInterval(timerInterval);
+    timer.style.visibility = 'hidden';
+    quiz_title.style.display = 'none';
+    quiz_question.textContent = 'Quiz finished! Thanks for playing.';
+    answers_wrapper.style.display = 'none';
+    next_question_wrapper.style.display = 'none';
+    results_message.style.display = 'block';
+    results_message.textContent = `You got ${correctAnswers} correct answers.`;
+    restart_quiz_btn.style.display = 'block';
+}
+
+function restartQuiz() {
+    currentQuestion = 0;
+    correctAnswers = 0;
+
+    timer.style.visibility = 'visible';
+    quiz_title.style.display = 'block';
+    answers_wrapper.style.display = 'flex';
+    next_question_wrapper.style.display = 'flex';
+    results_message.style.display = 'none';
+    restart_quiz_btn.style.display = 'none';
+
+    displayQuestion();
+}
+
+next_question_btn.addEventListener('click', () => {
+    currentQuestion++;
+    displayQuestion();
 });
 
-displayQuestion(currentQuestion);
+restart_quiz_btn.addEventListener('click', restartQuiz);
+
+displayQuestion();
