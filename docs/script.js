@@ -181,8 +181,6 @@ function submitBtnClick(){
 
 submit_btn.addEventListener("click", submitBtnClick);
 
-
-
 function displayResults() {
     clearInterval(timerInterval);
     timer.style.visibility = 'hidden';
