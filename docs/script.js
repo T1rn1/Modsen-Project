@@ -88,7 +88,7 @@ function addAnswerButtonListeners(correctAnswer) {
 }
 
 function multipleAnswerHandler(){
-    alert("There may be several answers to this question.");
+    addWarning();
     answers_arr = [];
     answer_btns.forEach((btn) => {
         btn.addEventListener('click', (e) => {
@@ -112,6 +112,15 @@ function multipleAnswerHandler(){
             next_question_wrapper.style.visibility = 'hidden';
         });
     });
+}
+
+function addWarning(){
+    const thinText = document.createElement('span');
+    thinText.textContent = "There may be several answers.";
+    thinText.style.fontWeight = 'lighter';
+    quiz_question.appendChild(document.createElement('br')); 
+    quiz_question.appendChild(thinText);
+
 }
 
 function singleAnswerHandler(correctAnswer){
