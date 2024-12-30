@@ -32,6 +32,7 @@ body {
     background-color: var(--container-bg-color);
     box-shadow: var(--container-box-shadow);
     padding: 10px;
+    margin: 0 10px;
     display: flex;
     flex-direction: column;
     justify-content: center;
