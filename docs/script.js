@@ -1,24 +1,22 @@
-import { questions, quizSelectors } from './constants.js';
+import { questions } from './constants.js';
 
-let currentQuestion = 4;
+let currentQuestion = 0;
 let correctAnswers = 0;
 let timerTime = 10;
 let timerInterval;
 let answer_btns;
 let answers_arr;
 
-const {
-    swap_theme_btn,
-    timer,
-    quiz_title,
-    quiz_question,
-    results_message,
-    answers_wrapper,
-    next_question_wrapper,
-    submit_btn,
-    next_question_btn,
-    restart_quiz_btn,
-} = quizSelectors;
+const swap_theme_btn = document.getElementById("swap-theme-btn");
+const timer = document.getElementById("timer");
+const quiz_title = document.getElementById("quiz-title");
+const quiz_question = document.getElementById("quiz-question");
+const results_message = document.getElementById("results-message");
+const answers_wrapper = document.getElementById("answers-wrapper");
+const next_question_wrapper = document.getElementById("next-question-wrapper");
+const submit_btn = document.getElementById("submit-question-btn");
+const next_question_btn = document.getElementById("next-question-btn");
+const restart_quiz_btn = document.getElementById("restart-quiz-btn");
 
 swap_theme_btn.addEventListener("click", toggleDarkTheme);
 

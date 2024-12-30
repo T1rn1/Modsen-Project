@@ -35,16 +35,3 @@ export const questions = [
         answer: "Yom Kippur"
     }
 ];
-
-export const quizSelectors = {
-    swap_theme_btn: document.getElementById("swap-theme-btn"),
-    timer: document.getElementById("timer"),
-    quiz_title: document.getElementById("quiz-title"),
-    quiz_question: document.getElementById("quiz-question"),
-    results_message: document.getElementById("results-message"),
-    answers_wrapper: document.getElementById("answers-wrapper"),
-    next_question_wrapper: document.getElementById("next-question-wrapper"),
-    submit_btn: document.getElementById("submit-question-btn"),
-    next_question_btn: document.getElementById("next-question-btn"),
-    restart_quiz_btn: document.getElementById("restart-quiz-btn"),
-};
