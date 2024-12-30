@@ -46,11 +46,35 @@ function startTimer() {
             timerTime--;
         } else {
             clearInterval(timerInterval);
-            currentQuestion++;
-            displayQuestion();
+            highlightCorrectAnswers();
+            setTimeout(() => {
+                currentQuestion++;
+                displayQuestion();
+            }, 2000);
         }
     }, 1000);
 }
+
+
+function highlightCorrectAnswers() {
+    const correctAnswer = questions[currentQuestion].answer;
+    
+    if (Array.isArray(correctAnswer)) {
+        answer_btns.forEach((btn) => {
+            if (correctAnswer.includes(btn.textContent)) {
+                btn.style.background = 'green';
+            }
+        });
+    } else {
+        answer_btns.forEach((btn) => {
+            if (btn.textContent === correctAnswer) {
+                btn.style.background = 'green';
+            }
+        });
+    }
+    answer_btns.forEach((btn) => btn.disabled = true);
+}
+
 
 function restartTimer() {
     clearInterval(timerInterval);
@@ -120,7 +144,6 @@ function addWarning(){
     thinText.style.fontWeight = 'lighter';
     quiz_question.appendChild(document.createElement('br')); 
     quiz_question.appendChild(thinText);
-
 }
 
 function singleAnswerHandler(correctAnswer){
