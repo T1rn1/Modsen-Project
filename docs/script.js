@@ -81,59 +81,67 @@ function createAnswerButtons() {
 
 function addAnswerButtonListeners(correctAnswer) {
     if(Array.isArray(correctAnswer)){
-        alert("There may be several answers to this question.");
-        answers_arr = [];
-        answer_btns.forEach((btn) => {
-            btn.addEventListener('click', (e) => {
-                
-                const selected_btn = e.target;
-
-                if(answers_arr.includes(selected_btn.textContent)){
-                    answers_arr = answers_arr.filter(item => item !== selected_btn.textContent);
-                    setButtonBackgroundColor(selected_btn);
-                }else{
-                    answers_arr.push(selected_btn.textContent)
-                    selected_btn.style.background = 'gray';
-                }
-
-                if(answers_arr.length > 0){
-                    submit_btn.style.visibility = "visible";
-                }else{
-                    submit_btn.style.visibility = "hidden";
-                }
-
-                next_question_wrapper.style.visibility = 'hidden';
-            });
-        });
+        multipleAnswerHandler();
     } else {
-        answer_btns.forEach((btn) => {
-            btn.addEventListener('click', (e) => {
-                const selectedOption = e.target.textContent;
-
-                answer_btns.forEach(button => button.disabled = true);
-
-                if (selectedOption === correctAnswer) {
-                    correctAnswers++;
-                    e.target.style.background = 'green';
-                } else {
-                    e.target.style.background = 'red';
-                    
-                    answer_btns.forEach(button => {
-                        if (button.textContent === correctAnswer) {
-                            button.style.background = 'green';
-                        }
-                    });
-                }
-
-                next_question_wrapper.style.visibility = 'hidden';
-
-                setTimeout(() => {
-                    currentQuestion++;
-                    displayQuestion();
-                }, 1000);
-            });
-        });
+        singleAnswerHandler(correctAnswer);
     }
+}
+
+function multipleAnswerHandler(){
+    alert("There may be several answers to this question.");
+    answers_arr = [];
+    answer_btns.forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+            
+            const selected_btn = e.target;
+
+            if(answers_arr.includes(selected_btn.textContent)){
+                answers_arr = answers_arr.filter(item => item !== selected_btn.textContent);
+                setButtonBackgroundColor(selected_btn);
+            }else{
+                answers_arr.push(selected_btn.textContent)
+                selected_btn.style.background = 'gray';
+            }
+
+            if(answers_arr.length > 0){
+                submit_btn.style.visibility = "visible";
+            }else{
+                submit_btn.style.visibility = "hidden";
+            }
+
+            next_question_wrapper.style.visibility = 'hidden';
+        });
+    });
+}
+
+function singleAnswerHandler(correctAnswer){
+    answer_btns.forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+            const selectedOption = e.target.textContent;
+
+            answer_btns.forEach(button => button.disabled = true);
+
+            if (selectedOption === correctAnswer) {
+                correctAnswers++;
+                e.target.style.background = 'green';
+            } else {
+                e.target.style.background = 'red';
+                
+                answer_btns.forEach(button => {
+                    if (button.textContent === correctAnswer) {
+                        button.style.background = 'green';
+                    }
+                });
+            }
+
+            next_question_wrapper.style.visibility = 'hidden';
+
+            setTimeout(() => {
+                currentQuestion++;
+                displayQuestion();
+            }, 1000);
+        });
+    });
 }
 
 function setButtonBackgroundColor(button) {
