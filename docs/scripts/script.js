@@ -23,9 +23,15 @@ swap_theme_btn.addEventListener("click", toggleDarkTheme);
 function toggleDarkTheme() {
     const root = document.documentElement;
     root.classList.toggle('dark-theme');
-    answer_btns.forEach((btn) => {
-        if(!answers_arr.includes(btn.textContent)) setButtonBackgroundColor(btn)
-    })
+
+    for (let btn of answer_btns) {
+        setButtonBackgroundColor(btn);
+        if (Array.isArray(answers_arr)) {
+            if (answers_arr.includes(btn.textContent)) {
+                btn.style.background = 'gray';
+            }
+        }
+    }
 }
 
 function displayQuestion() {
@@ -55,7 +61,6 @@ function startTimer() {
     }, 1000);
 }
 
-
 function highlightCorrectAnswers() {
     const correctAnswer = questions[currentQuestion].answer;
     
@@ -74,7 +79,6 @@ function highlightCorrectAnswers() {
     }
     answer_btns.forEach((btn) => btn.disabled = true);
 }
-
 
 function restartTimer() {
     clearInterval(timerInterval);
