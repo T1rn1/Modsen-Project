@@ -26,7 +26,7 @@ function toggleDarkTheme() {
 
     for (let btn of answer_btns) {
         setButtonBackgroundColor(btn);
-        if (Array.isArray(answers_arr) && answers_arr.length > 1) {
+        if (Array.isArray(answers_arr)) {
             if (answers_arr.includes(btn.textContent)) {
                 btn.style.background = 'gray';
             }
