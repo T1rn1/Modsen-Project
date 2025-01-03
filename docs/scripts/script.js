@@ -7,6 +7,7 @@ let timerInterval;
 let answer_btns;
 let answers_arr;
 
+const body = document.body;
 const swap_theme_btn = document.getElementById("swap-theme-btn");
 const timer = document.getElementById("timer");
 const quiz_title = document.getElementById("quiz-title");
@@ -18,20 +19,22 @@ const submit_btn = document.getElementById("submit-question-btn");
 const next_question_btn = document.getElementById("next-question-btn");
 const restart_quiz_btn = document.getElementById("restart-quiz-btn");
 
-swap_theme_btn.addEventListener("click", toggleDarkTheme);
+swap_theme_btn.addEventListener("click", toggleTheme);
 
-function toggleDarkTheme() {
-    const root = document.documentElement;
-    root.classList.toggle('dark-theme');
+let isLightTheme = true;
 
-    for (let btn of answer_btns) {
-        setButtonBackgroundColor(btn);
-        if (Array.isArray(answers_arr)) {
-            if (answers_arr.includes(btn.textContent)) {
-                btn.style.background = 'gray';
-            }
-        }
+function toggleTheme() {
+    const body = document.body;
+
+    if (isLightTheme) {
+        body.classList.remove("light-theme");
+        body.classList.add("dark-theme");
+    } else {
+        body.classList.remove("dark-theme");
+        body.classList.add("light-theme");
     }
+
+    isLightTheme = !isLightTheme;
 }
 
 function displayQuestion() {
@@ -99,7 +102,6 @@ function createAnswerButtons() {
         const newBtn = document.createElement('button');
         newBtn.className = 'btn answer-btn';
         newBtn.textContent = option;
-        setButtonBackgroundColor(newBtn);
         answers_wrapper.appendChild(newBtn);
     });
 
@@ -115,28 +117,22 @@ function addAnswerButtonListeners(correctAnswer) {
     }
 }
 
-function multipleAnswerHandler(){
+function multipleAnswerHandler() {
     addWarning();
     answers_arr = [];
     answer_btns.forEach((btn) => {
         btn.addEventListener('click', (e) => {
-            
             const selected_btn = e.target;
 
-            if(answers_arr.includes(selected_btn.textContent)){
+            if (answers_arr.includes(selected_btn.textContent)) {
                 answers_arr = answers_arr.filter(item => item !== selected_btn.textContent);
-                setButtonBackgroundColor(selected_btn);
-            }else{
-                answers_arr.push(selected_btn.textContent)
-                selected_btn.style.background = 'gray';
+                selected_btn.classList.remove('selected');
+            } else {
+                answers_arr.push(selected_btn.textContent);
+                selected_btn.classList.add('selected');
             }
 
-            if(answers_arr.length > 0){
-                submit_btn.style.visibility = "visible";
-            }else{
-                submit_btn.style.visibility = "hidden";
-            }
-
+            submit_btn.style.visibility = answers_arr.length > 0 ? "visible" : "hidden";
             next_question_wrapper.style.visibility = 'hidden';
         });
     });
@@ -150,22 +146,22 @@ function addWarning(){
     quiz_question.appendChild(thinText);
 }
 
-function singleAnswerHandler(correctAnswer){
+function singleAnswerHandler(correctAnswer) {
     answer_btns.forEach((btn) => {
         btn.addEventListener('click', (e) => {
             const selectedOption = e.target.textContent;
 
-            answer_btns.forEach(button => button.disabled = true);
+            answer_btns.forEach(button => button.classList.add('disabled'));
 
             if (selectedOption === correctAnswer) {
                 correctAnswers++;
-                e.target.style.background = 'green';
+                e.target.classList.add('correct');
             } else {
-                e.target.style.background = 'red';
-                
+                e.target.classList.add('incorrect');
+
                 answer_btns.forEach(button => {
                     if (button.textContent === correctAnswer) {
-                        button.style.background = 'green';
+                        button.classList.add('correct');
                     }
                 });
             }
@@ -178,11 +174,6 @@ function singleAnswerHandler(correctAnswer){
             }, 1000);
         });
     });
-}
-
-function setButtonBackgroundColor(button) {
-    let buttonBgColor = getComputedStyle(document.documentElement).getPropertyValue('--btn-bg-color');
-    button.style.backgroundColor = buttonBgColor;
 }
 
 function clearAnswers() {
@@ -210,8 +201,9 @@ function submitBtnClick(){
     if (checkArrays(answers_arr, rigthAnswers)) correctAnswers++;
     else {
         answer_btns.forEach((btn) => {
-            if (rigthAnswers.includes(btn.textContent)) btn.style.background = 'green';
-            else if (answers_arr.includes(btn.textContent) && !rigthAnswers.includes(btn.textContent)) btn.style.background = 'red';
+            btn.classList.remove('selected');
+            if (rigthAnswers.includes(btn.textContent))  btn.classList.add('correct');
+            else if (answers_arr.includes(btn.textContent) && !rigthAnswers.includes(btn.textContent)) btn.classList.add('incorrect');
         })
     }
 
