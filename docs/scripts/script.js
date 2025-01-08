@@ -50,9 +50,10 @@ function displayQuestion() {
 
 function startTimer() {
     timerInterval = setInterval(() => {
-        if (timerTime >= 0) {
-            timer.textContent = timerTime;
+        if (timerTime > 0) {
             timerTime--;
+            timer.textContent = timerTime;
+            
         } else {
             clearInterval(timerInterval);
             highlightCorrectAnswers();
